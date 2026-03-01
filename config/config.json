@@ -9,11 +9,11 @@
   },
   "providers": {
     "google": {
-      "api_key": "",
+      "api_key": "$GLOBAL_API_KEY",
       "api_base": ""
     },
     "gemini": {
-      "api_key": "",
+      "api_key": "$GLOBAL_API_KEY",
       "api_base": ""
     }
   },
