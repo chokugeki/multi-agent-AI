@@ -1,0 +1,94 @@
+# Sato Digital Clone Organization - Core Topology
+# Version for PicoClaw v0.1.2
+version: "1.0"
+
+# LLMのグローバル設定：ここでGeminiを強制指定します
+llm:
+  provider: "google"            # googleを指定することでglm-4を回避します
+  model: "gemini-2.5-flash"     # 使用するモデル名
+  api_key_env: "GLOBAL_API_KEY" # global.env内の変数名と一致させる
+
+nodes:
+  # --- 1. 総務部 (General Affairs) ---
+  - id: ga_agent
+    role: "General Affairs"
+    prompt_path: "/app/agents/ga/IDENTITY.md"
+    subscriptions:
+      - "sato/command/external"
+      - "sato/collab/response/+"
+    publications:
+      - "sato/report/ceo"
+      - "sato/pipeline/reasoning/start"
+
+  # --- 2. 企画部 (Planning) ---
+  - id: planning_agent
+    role: "Planning"
+    prompt_path: "/app/agents/planning/IDENTITY.md"
+    subscriptions:
+      - "sato/pipeline/reasoning/context"
+      - "sato/pipeline/reasoning/facts"
+      - "sato/pipeline/patrol/context"
+      - "sato/pipeline/patrol/news"
+    publications:
+      - "sato/collab/response/ga"
+
+  # --- 3. 調査部 (Research) ---
+  - id: research_agent
+    role: "Research"
+    prompt_path: "/app/agents/research/IDENTITY.md"
+    tools: ["web_search"]
+    subscriptions:
+      - "sato/pipeline/reasoning/start"
+      - "sato/pipeline/patrol/trigger"
+    publications:
+      - "sato/pipeline/reasoning/facts"
+      - "sato/pipeline/patrol/news"
+
+  # --- 4. 管理部 (Management) ---
+  - id: management_agent
+    role: "Management"
+    prompt_path: "/app/agents/management/IDENTITY.md"
+    subscriptions:
+      - "sato/report/#"
+      - "sato/pipeline/reasoning/start"
+      - "sato/pipeline/patrol/news"
+    publications:
+      - "sato/log/memory_status"
+      - "sato/pipeline/reasoning/context"
+      - "sato/pipeline/patrol/context"
+
+  # --- 5. 監査部 (Audit) ---
+  - id: audit_agent
+    role: "Audit"
+    prompt_path: "/app/agents/audit/IDENTITY.md"
+    subscriptions:
+      - "sato/#"
+    publications:
+      - "sato/alert/violation"
+
+  # --- 6. 開発部 (Development) ---
+  - id: development_agent
+    role: "Development"
+    prompt_path: "/app/agents/development/IDENTITY.md"
+    subscriptions:
+      - "sato/collab/ask/development"
+    publications:
+      - "sato/collab/response/ga"
+
+  # --- 7. 法務部 (Legal) ---
+  - id: legal_agent
+    role: "Legal"
+    prompt_path: "/app/agents/legal/IDENTITY.md"
+    subscriptions:
+      - "sato/collab/ask/legal"
+    publications:
+      - "sato/collab/response/ga"
+
+  # --- 8. 保健部 (Health Care) ---
+  - id: healthcare_agent
+    role: "Health Care"
+    prompt_path: "/app/agents/healthcare/IDENTITY.md"
+    subscriptions:
+      - "sato/command/external"
+    publications:
+      - "sato/report/ceo"

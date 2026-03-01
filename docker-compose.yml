@@ -1,0 +1,43 @@
+# Sato Digital Clone Organization - Infrastructure Configuration
+
+services:
+  # --- 1. MQTT Broker: 組織のメッセージハブ ---
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: sato-mqtt-broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./infrastructure/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./infrastructure/mosquitto/data:/mosquitto/data
+      - ./infrastructure/mosquitto/log:/mosquitto/log
+    restart: always
+
+  # --- 2. PicoClaw Core: 組織の知能（エージェント群） ---
+  picoclaw-core:
+    image: sipeed/picoclaw:latest
+    container_name: sato-picoclaw-core
+    depends_on:
+      - mqtt-broker
+    env_file:
+      - ./config/global.env
+    volumes:
+      - ./config:/app/config
+      - ./agents:/app/agents
+      - ./data:/app/data
+      # 必須: glm-4.7エラーを回避するためのグローバル設定ファイル
+      - ./config/config.json:/root/.picoclaw/config.json
+    # 修正: "agent" から "gateway" に変更し、組織モードで起動
+    command: ["gateway", "--config", "/app/config/topology.yaml"]
+    restart: always
+
+  # --- 3. Gateway Bridge: Telegram接続用インターフェース ---
+  gateway-bridge:
+    build: ./bridge
+    container_name: sato-gateway-bridge
+    depends_on:
+      - mqtt-broker
+    env_file:
+      - ./config/global.env
+    restart: always

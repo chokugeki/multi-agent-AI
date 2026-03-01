@@ -1,0 +1,38 @@
+# Satoクローン 巡回サイト・トピックリスト
+# 
+# ここに記述されたサイトURLやトピックは、定期パトロール機能で自動的に巡回・検索されます。
+# 1行に1つのURLまたはキーワードを記述してください。
+# 空行や「#」で始まる行は無視されます。
+https://developers.google.com/products?hl=ja
+# [技術・ニュースサイト]
+https://www.technologyreview.jp/
+https://techcrunch.com/
+
+# [AIモデル開発関連]
+https://huggingface.co/blog
+Google DeepMind ニュース
+
+# [特定のトピック]
+最新の軽量LLMモデルのリリース情報
+マルチエージェントオーケストレーションのユースケース
+♯厚生労働省
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/shokuhin/
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iyakuhin/
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000099450.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/suido/index.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/shougaishahukushi/index.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/seikatsuhogo/index.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/kaigo_koureisha/index.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/index.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/nenkin/index.html
+https://www.mhlw.go.jp/stf/taiou_001_00002.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hokabunya/kokusai/
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hokabunya/kenkyujigyou/
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hokabunya/shakaihoshou/
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000055967.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hokabunya/kansoka/index_00003.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hokabunya/index_00005.html
+https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/shougaishakoyou/index_00007.html

@@ -1,0 +1,29 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "/app/data",
+      "model": "gemini-2.5-flash",
+      "max_tokens": 8192,
+      "temperature": 0.7
+    }
+  },
+  "providers": {
+    "google": {
+      "api_key": "AIzaSyCO42YZMTx4ySZTxr05Cr_PVo1cmJbGiu8",
+      "api_base": ""
+    },
+    "gemini": {
+      "api_key": "AIzaSyCO42YZMTx4ySZTxr05Cr_PVo1cmJbGiu8",
+      "api_base": ""
+    }
+  },
+  "channels": {
+    "mqtt": {
+      "enabled": true,
+      "host": "mqtt-broker",
+      "port": 1883,
+      "topic_prefix": "sato",
+      "client_id": "picoclaw_core"
+    }
+  }
+}
