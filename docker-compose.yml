@@ -26,10 +26,12 @@ services:
       - ./config:/app/config
       - ./agents:/app/agents
       - ./data:/app/data
-      # 必須: glm-4.7エラーを回避するためのグローバル設定ファイル
-      - ./config/config.json:/root/.picoclaw/config.json
+      # 必須: glm-4.7エラーを回避するため、entrypointスクリプトでconfig.jsonを生成します
+      # APIキーを起動時に置換するためのスクリプト
+      - ./infrastructure/picoclaw_entrypoint.sh:/entrypoint.sh
     # 修正: "agent" から "gateway" に変更し、組織モードで起動
-    command: ["gateway", "--config", "/app/config/topology.yaml"]
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "picoclaw", "gateway", "--config", "/app/config/topology.yaml" ]
     restart: always
 
   # --- 3. Gateway Bridge: Telegram接続用インターフェース ---
