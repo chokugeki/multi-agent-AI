@@ -125,6 +125,19 @@ def needs_active_search(user_input: str) -> bool:
 
 
 # ==============================================================================
+# 設定読み込み
+# ==============================================================================
+def get_settings():
+    settings_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "settings.json")
+    try:
+        import json
+        with open(settings_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+# ==============================================================================
 # コスト追跡
 # ==============================================================================
 
@@ -144,14 +157,23 @@ class CostTracker:
         })
     
     def summary(self, response_language: str = "日本語") -> str:
+        settings = get_settings()
+        local_llm_mode = settings.get("local_llm_mode", False)
+
         total_time = round(time.time() - self.start_time, 1)
         total_input = sum(c["input_chars"] for c in self.calls)
         total_output = sum(c["output_chars"] for c in self.calls)
-        # Gemini 2.5 Flash: 入力 $0.15/1Mトークン, 出力 $0.60/1Mトークン
-        # 概算: 1文字 ≈ 1.5トークン (日本語)
-        est_input_tokens = int(total_input * 1.5)
-        est_output_tokens = int(total_output * 1.5)
-        est_cost_usd = (est_input_tokens * 0.15 + est_output_tokens * 0.60) / 1_000_000
+        
+        if local_llm_mode:
+            est_input_tokens = 0
+            est_output_tokens = 0
+            est_cost_usd = 0.0
+        else:
+            # Gemini 2.5 Flash: 入力 $0.15/1Mトークン, 出力 $0.60/1Mトークン
+            # 概算: 1文字 ≈ 1.5トークン (日本語)
+            est_input_tokens = int(total_input * 1.5)
+            est_output_tokens = int(total_output * 1.5)
+            est_cost_usd = (est_input_tokens * 0.15 + est_output_tokens * 0.60) / 1_000_000
         
         if response_language == "日本語":
             lines = [f"📊 コスト概算 | LLM呼出: {len(self.calls)}回\n   合計時間: {total_time}秒"]
@@ -162,7 +184,10 @@ class CostTracker:
                 "management": "👔 管理(テキスト生成)"
             }
             call_fmt = "   └ {name}:\n      入力{inn}字 → 出力{out}字 ({dur}秒)"
-            token_fmt = f"   └ 推定トークン:\n      入力{est_input_tokens} + 出力{est_output_tokens} ≈ ${est_cost_usd:.4f}"
+            if local_llm_mode:
+                token_fmt = f"   └ 推定トークン:\n      ローカル稼働時 ≈ $0.0"
+            else:
+                token_fmt = f"   └ 推定トークン:\n      入力{est_input_tokens} + 出力{est_output_tokens} ≈ ${est_cost_usd:.4f}"
         else:
             lines = [f"📊 Cost Est. | LLM Calls: {len(self.calls)}\n   Total Time: {total_time}s"]
             role_map = {
@@ -172,7 +197,10 @@ class CostTracker:
                 "management": "👔 Management (Text Gen)"
             }
             call_fmt = "   └ {name}:\n      In {inn} chars → Out {out} chars ({dur}s)"
-            token_fmt = f"   └ Est. Tokens:\n      In {est_input_tokens} + Out {est_output_tokens} ≈ ${est_cost_usd:.4f}"
+            if local_llm_mode:
+                token_fmt = f"   └ Est. Tokens:\n      Local Run ≈ $0.0"
+            else:
+                token_fmt = f"   └ Est. Tokens:\n      In {est_input_tokens} + Out {est_output_tokens} ≈ ${est_cost_usd:.4f}"
             
         for c in self.calls:
             display_name = role_map.get(c['agent'], c['agent'])
@@ -187,6 +215,11 @@ class CostTracker:
 
 def call_agent(agent_name: str, message: str, tracker: CostTracker) -> str:
     """指定されたエージェントにメッセージを送り、応答を返す"""
+    settings = get_settings()
+    unlimited = settings.get("unlimited_llm_calls", False)
+    
+    max_out = 999999 if unlimited else MAX_OUTPUT_CHARS
+    timeout_val = 600 if unlimited else LLM_CALL_TIMEOUT
     
     prompt_path = AGENT_PROMPTS.get(agent_name)
     if not prompt_path:
@@ -224,7 +257,7 @@ def call_agent(agent_name: str, message: str, tracker: CostTracker) -> str:
             ],
             capture_output=True,
             text=True,
-            timeout=LLM_CALL_TIMEOUT
+            timeout=timeout_val
         )
         duration = time.time() - start
         
@@ -234,8 +267,8 @@ def call_agent(agent_name: str, message: str, tracker: CostTracker) -> str:
         response = extract_response(result.stdout)
         
         # 出力文字数制限
-        if len(response) > MAX_OUTPUT_CHARS:
-            response = response[:MAX_OUTPUT_CHARS] + "\n...(出力制限により省略)"
+        if len(response) > max_out:
+            response = response[:max_out] + "\n...(出力制限により省略)"
         
         tracker.record(agent_name, len(message), len(response), duration)
         return response

@@ -1,6 +1,6 @@
 patrol:
   # パトロール間隔（時間単位）
-  interval_hours: 6
+  interval_hours: 2
 
   # 1回のパトロールあたりの最大コスト（USD）
   max_cost_per_run_usd: 0.01

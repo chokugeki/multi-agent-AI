@@ -141,7 +141,9 @@ with st.sidebar:
             "clone_name": "佐藤",
             "user_name": "ユーザー",
             "clone_avatar": None,
-            "user_avatar": None
+            "user_avatar": None,
+            "local_llm_mode": False,
+            "unlimited_llm_calls": False
         }
         
     def save_settings(settings):
@@ -160,6 +162,8 @@ with st.sidebar:
         st.session_state["user_name"] = loaded.get("user_name", "ユーザー")
         st.session_state["clone_avatar"] = loaded.get("clone_avatar", None)
         st.session_state["user_avatar"] = loaded.get("user_avatar", None)
+        st.session_state["local_llm_mode"] = loaded.get("local_llm_mode", False)
+        st.session_state["unlimited_llm_calls"] = loaded.get("unlimited_llm_calls", False)
         st.session_state["settings_loaded"] = True
     
     # ----------------------------------------------------------------------
@@ -240,6 +244,18 @@ with st.sidebar:
             u_avatar_upload = st.file_uploader("Upload User Avatar", type=["png", "jpg", "jpeg"], key="u_avatar_upload", label_visibility="collapsed")
             if u_avatar_upload:
                 st.session_state["new_user_avatar"] = u_avatar_upload
+                
+        st.markdown("---")
+        st.markdown("### 🛠️ 詳細設定 / Advanced Settings")
+        
+        c1, c2 = st.columns(2)
+        with c1:
+            local_mode = st.checkbox("ローカルLLMモード\n(コスト計算 $0.0)", value=st.session_state["local_llm_mode"])
+            st.session_state["local_llm_mode"] = local_mode
+            
+        with c2:
+            unlimited_mode = st.checkbox("LLM呼び出し回数無制限\n(ガードレール無効化)", value=st.session_state["unlimited_llm_calls"])
+            st.session_state["unlimited_llm_calls"] = unlimited_mode
         
         if st.button("適用 / Apply", use_container_width=True, type="primary"):
             # Update avatars if new ones were uploaded
@@ -260,7 +276,9 @@ with st.sidebar:
                 "clone_name": st.session_state["clone_name"],
                 "user_name": st.session_state["user_name"],
                 "clone_avatar": st.session_state["clone_avatar"],
-                "user_avatar": st.session_state["user_avatar"]
+                "user_avatar": st.session_state["user_avatar"],
+                "local_llm_mode": st.session_state["local_llm_mode"],
+                "unlimited_llm_calls": st.session_state["unlimited_llm_calls"]
             })
             st.rerun()
 
@@ -284,7 +302,9 @@ with st.sidebar:
             "clone_name": st.session_state["clone_name"],
             "user_name": st.session_state["user_name"],
             "clone_avatar": st.session_state["clone_avatar"],
-            "user_avatar": st.session_state["user_avatar"]
+            "user_avatar": st.session_state["user_avatar"],
+            "local_llm_mode": st.session_state["local_llm_mode"],
+            "unlimited_llm_calls": st.session_state["unlimited_llm_calls"]
         })
         st.rerun()
 

@@ -3,5 +3,7 @@
   "clone_name": "レオ",
   "user_name": "餌やり",
   "clone_avatar": "/home/toshiaki/sato-clone-org/infrastructure/../data/avatars/clone_avatar.png",
-  "user_avatar": null
+  "user_avatar": null,
+  "local_llm_mode": true,
+  "unlimited_llm_calls": true
 }

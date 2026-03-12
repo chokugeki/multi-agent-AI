@@ -31,7 +31,7 @@ services:
       - ./infrastructure/picoclaw_entrypoint.sh:/entrypoint.sh
     # 修正: "agent" から "gateway" に変更し、組織モードで起動
     entrypoint: [ "/entrypoint.sh" ]
-    command: [ "picoclaw", "gateway", "--config", "/app/config/topology.yaml" ]
+    command: [ "picoclaw", "gateway", "--config", "/tmp/topology.yaml" ]
     restart: always
 
   # --- 3. Gateway Bridge: Telegram接続用インターフェース ---

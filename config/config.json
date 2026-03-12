@@ -15,6 +15,10 @@
     "gemini": {
       "api_key": "$GLOBAL_API_KEY",
       "api_base": ""
+    },
+    "openai": {
+      "api_key": "dummy",
+      "api_base": "$OLLAMA_API_BASE"
     }
   },
   "channels": {
